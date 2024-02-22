@@ -1,0 +1,21 @@
+name: SNOWSQL
+on:
+
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Descargar SnowSQL
+        run: curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.31-linux_x86_64.bash
+      - name: Instalar SnowSQL
+        run: SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash
+      - name: Version SnowSQL
+        run: ~/bin/snowsql -v
+      - name: Ejecutar SQL
+        run: ~/bin/snowsql -f ./scripts/usuarios.sql
+        env:
+          SNOWSQL_USER: ${{ secrets.SNOWSQL_USER }}
+          SNOWSQL_ACCOUNT: ${{ secrets.SNOWSQL_ACCOUNT }}
+          SNOWSQL_PWD: ${{ secrets.SNOWSQL_PWD }}
